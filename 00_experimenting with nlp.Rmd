@@ -1,0 +1,116 @@
+---
+title: "00_experiment with nlp"
+author: "Brenna Kelly"
+date: "2025-04-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{python}
+
+import transformers
+
+```
+
+
+
+```{r}
+# .rs.restartR()
+
+library(reticulate)
+# sys <- reticulate::import("sys")
+
+# conda_create("my_project_env")
+
+use_python("/Library/Frameworks/Python.framework/Versions/3.12/bin/python3")
+
+# py_install(packages = c("numpy","pandas","scikit-learn","matplotlib",
+#                         "seaborn","statsmodels", "transformers"))
+# conda_list()
+
+transformers <- import("transformers")
+torch <- import("torch")
+
+# py_run_string('import transformers')
+
+pipeline <- transformers$pipeline("zero-shot-classification", model = "roberta-large-mnli")#, return_all_scores = TRUE)
+
+# Define candidate tones
+candidate_labels <- c(
+  "defensive", "apologetic", "optimistic", "urgent", 
+  "sarcastic", "neutral", "angry", "dismissive", "cautious"
+)
+
+# Run classification with candidate labels
+result <- pipeline(
+  "“I know I don’t fully understand it,” he said. “It’s important for EPA to come out and explain what the process is, how people can provide comment, how this identifies what areas need to be cleaned up and how this helps get the areas cleaned up.” His city has three potential Superfund sites. ",
+  candidate_labels = c(#"investigative", "neutral", "optimistic",
+                       # "dangerous", "scientific", 
+                       #"critical", 
+                       "optimistic", "optimistic", "hopeful"),#,
+                       #"urgent", "dismissive",
+                       # "alarmed"),
+  multi_label = TRUE
+)
+
+result
+
+# Run classification with candidate labels
+result <- pipeline(
+  "But Kennecott wants to do the cleanup itself. Company officials point with pride to the remediation work done in recent years to the tune of some $80 million. And they are certain Superfund status will slow the cleanup, make it more expensive and tarnish Kennecott’s reputation. ",
+  candidate_labels = c(#"investigative", "neutral", "optimistic",
+                       # "dangerous", "scientific", 
+                       #"critical", 
+                       "resistant", "assertive", "cautionary", "cocky"),#,
+                       #"urgent", "dismissive",
+                       # "alarmed"),
+  multi_label = TRUE
+)
+
+result
+
+
+"The samples showed extremely high lead concentrations in the creek bed. The peak found so far is 30,500 parts per million parts of soil."
+
+# Function to classify tone
+classify_tone <- function(text) {
+  result <- pipeline(
+    text,
+    candidate_labels = candidate_labels,
+    multi_label = TRUE
+  )
+  
+  # Return top predicted tones
+  data.frame(
+    label = result$labels,
+    score = result$scores
+  )
+}
+
+# Example usage
+text <- "Despite promising to clean the creek, Kennecott's actions have been sluggish and frustrating for residents."
+
+tone_result <- classify_tone(text, )
+print(tone_result)
+
+pipeline("Residents were shocked and furious after the arsenic findings.")
+
+
+# Load the BART-large-MNLI model
+classifier <- transformers$pipeline("zero-shot-classification", model = "facebook/bart-large-mnli")
+
+
+
+
+
+pipeline("The samples showed extremely high lead concentrations in the creek bed. The peak found so far is 30,500 parts per million parts of soil.")
+
+
+```
+
+

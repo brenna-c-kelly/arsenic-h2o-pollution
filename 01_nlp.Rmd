@@ -1,0 +1,23 @@
+---
+title: "00_nlp"
+author: "Brenna Kelly"
+date: "2025-04-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+
+
+```
+
+
+
+
+
+

@@ -1,0 +1,63 @@
+---
+title: "00_text cleaning"
+author: "Brenna Kelly"
+date: "2025-04-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(purrr)
+
+```
+
+
+- put all articles in a dataframe format
+- grab quotes (and attribution) from the text
+- 
+
+
+```{r}
+
+txt_files <- paste0("data/raw article text/", 
+                    list.files("data/raw article text"))
+
+read.delim(txt_files[6])
+
+txt <- list()
+
+for(i in 1:length(txt_files)) {
+  
+  txt[i] <- read.delim(txt_files[i])
+  
+}
+
+txt_df <- as.data.frame(t(
+  rbind(list.files("data/raw article text"),
+                as.data.frame(t(txt)))
+  ))
+
+names(txt_df) <- c("file_name", "text")
+
+test <- txt_df[13, "text"]
+
+head(test)
+
+write.csv(txt_df, "txt_df.csv", row.names = FALSE)
+
+for(i in 1:length(txt_df)) {
+  
+  txt_df[i, "text"] <- unlist(txt_df[i, "text"])
+  
+}
+
+unlist(txt_df[16, "text"])
+
+typeof(txt_df)
+
+```
+
