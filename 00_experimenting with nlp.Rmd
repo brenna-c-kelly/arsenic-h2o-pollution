@@ -58,7 +58,7 @@ result <- pipeline(
   multi_label = TRUE
 )
 
-result
+result 
 
 # Run classification with candidate labels
 result <- pipeline(
