@@ -55,9 +55,87 @@ for(i in 1:length(txt_df)) {
   
 }
 
-unlist(txt_df[16, "text"])
+unlist(txt_df[157, "text"])
+txt_df[157, "file_name"]
+
+
+
+
+
+
+sapply(txt_df[157, "text"], rbind)
+
+lapply(unlist(txt_df[157, "text"]), rbind)
 
 typeof(txt_df)
 
 ```
+
+
+To get subset:  
+- add year column
+- get a 10% subset from each decade
+
+```{r}
+
+library(dplyr)
+library(stringr)
+
+txt_df$year <- str_sub(txt_df$file_name, start = 0, end = 4)
+txt_df$decade <- paste0(str_sub(txt_df$year, start = 0, end = 3), "0s")
+
+table(txt_df$year)
+table(txt_df$decade)
+
+# the proportion from each decade
+# - note: combine 2010s and 2020s
+p_80s <- ceiling(0.1 * table(txt_df$decade)["1980s"])
+p_90s <- ceiling(0.1 * table(txt_df$decade)["1990s"])
+p_20s <- ceiling(0.1 * table(txt_df$decade)["2000s"])
+p_1020s <- ceiling(0.1 * table(txt_df$decade)["2010s"]) + 
+  ceiling(0.1 * table(txt_df$decade)["2020s"])
+
+# decade for random subset
+txt_df$decade_subset <- ifelse(txt_df$decade %in% c("2010s", "2020s"),
+                               "2010s, 2020s", txt_df$decade)
+table(txt_df$decade_subset)
+round(prop.table(table(txt_df$decade_subset)), 2)
+
+# select random subset, stratified by decade of sampling (not using what's above)
+set.seed("3006")
+
+txt_subset <- txt_df |>
+  group_by(decade_subset) |>
+  sample_frac(size = 0.1)
+
+lapply(txt_subset$file_name, )
+
+test <- map_df(txt_subset$text[1], ~as.data.frame(.))
+
+rbind(map_df(txt_subset$file_name, ~as.data.frame(t(.)))
+
+
+```
+
+Putting it into a format with one "line" of text per row, for candidate tone identification:
+
+```{r}
+
+```
+
+
+
+
+- can I apply the model to an observation in txt_df?
+- can I apply the model to an item in list? (each line in an observation in txt_df)
+
+```{r}
+
+
+
+```
+
+
+
+
 
