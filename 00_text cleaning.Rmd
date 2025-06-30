@@ -110,9 +110,6 @@ txt_subset <- txt_df |>
 
 lapply(txt_subset$file_name, )
 
-test <- map_df(txt_subset$text[1], ~as.data.frame(.))
-
-rbind(map_df(txt_subset$file_name, ~as.data.frame(t(.)))
 
 
 ```
@@ -121,8 +118,56 @@ Putting it into a format with one "line" of text per row, for candidate tone ide
 
 ```{r}
 
+
+txt_reformat <- list()
+
+for(i in 1:nrow(txt_subset)) {
+  
+  test <- map_df(txt_subset$text[i], ~as.data.frame(.))
+  
+  test <- map_df(test, ~as.data.frame(.))
+  print(str(test))
+  
+  # adding other columns
+  test$file_name <- txt_subset$file_name[i]
+  test$year <- txt_subset$year[i]
+  test$decade <- txt_subset$decade[i]
+  
+  txt_reformat[[i]] <- test
+  
+}
+
+txt_reformat <- do.call(rbind, txt_reformat)
+
+txt_reformat$file_name <- do.call(rbind, txt_reformat$file_name)
+
+str(txt_reformat)
+
+write.csv(txt_reformat, "txt_subsample.csv", row.names = FALSE)
+
 ```
 
+list of practice candidate tones
+
+```{r}
+
+library(tidyr)
+
+tones <- read.csv("../practice_candidate tones.csv")
+
+tones <- tones |>
+  filter(!TONES %in% c("", " ", "but", "standpoint", "na", "ve")) |>
+  mutate(TONES = tolower(TONES))
+
+unique_tones <- tones |>
+  separate_rows(TONES) |>
+  distinct()
+
+unique_tones <- data.frame(tone = do.call(paste, c(as.data.frame(t(unique_tones)), sep = ", ")))
+
+unique_tones
+
+```
 
 
 
